@@ -1166,6 +1166,23 @@ class QueryBuilder(Selectable, Term):
 
         self._joins.append(join)
 
+
+    def add_join(self, join_stmt: 'JoinOn') -> 'self':
+        
+        if isinstance(join_stmt, JoinOn):
+            self._joins.append(join_stmt)
+        else:
+            raise JoinException(
+                "Parameter join_stmt must be subclass of JoinOn class "
+            )
+        return self
+
+    def add_joins(self, joins: list['JoinOn']):
+        for item_join in joins:
+            self.add_join(item_join)
+        return self
+
+
     def is_joined(self, table: Table) -> bool:
         return any(table == join.item for join in self._joins)
 
